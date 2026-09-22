@@ -506,17 +506,25 @@
         }
 
         // >>> AJUSTE MANUAL DO NÚMERO 4 <<<
-        // Cada chamada abaixo cria UMA das três barras do 4.
-        // Vector2(largura, altura) muda o tamanho da barra.
-        // Vector3(x, y, z) muda a posição: X esquerda/direita, Y baixo/cima.
+        // O 4 tem a mesma altura do zero (de Y 3.32 a 4.52) e barras de 0.2 de espessura.
+        // Vector2(largura, altura) é o tamanho da barra; Vector3(x, y, z) é o centro dela.
         // Deixe Z em 6.34 para manter o 4 à frente da placa branca.
-        // O último número gira a barra em RADIANOS; zero deixa a barra reta.
-        // 1) Diagonal: mude 0.42 para alterar a inclinação.
-        adicionarPecaDoQuatro(new THREE.Vector2(0.2, 0.78), new THREE.Vector3(-0.99, 4.14, 6.34), 0.42);
-        // 2) Haste vertical direita: a altura 1.25 alcança abaixo da barra.
-        adicionarPecaDoQuatro(new THREE.Vector2(0.2, 1.25), new THREE.Vector3(-0.31, 3.92, 6.34), 0);
-        // 3) Barra horizontal: a largura 1.17 cruza a diagonal e a haste.
-        adicionarPecaDoQuatro(new THREE.Vector2(1.17, 0.2), new THREE.Vector3(-0.74, 3.82, 6.34), 0);
+        // 1) Haste vertical: a perna direita do 4, de baixo até em cima.
+        adicionarPecaDoQuatro(new THREE.Vector2(0.2, 1.2), new THREE.Vector3(-0.45, 3.92, 6.34), 0);
+        // 2) Barra horizontal: cruza a haste um pouco abaixo do meio e passa dela à direita.
+        adicionarPecaDoQuatro(new THREE.Vector2(1.05, 0.2), new THREE.Vector3(-0.725, 3.67, 6.34), 0);
+
+        // 3) Diagonal: liga a ponta esquerda da barra ao topo da haste.
+        // Math.hypot dá o comprimento entre os dois pontos e Math.atan2 dá a inclinação.
+        const pontaDaBarra = new THREE.Vector2(-1.15, 3.67);
+        const topoDaHaste = new THREE.Vector2(-0.5, 4.42);
+        const distanciaX = topoDaHaste.x - pontaDaBarra.x;
+        const distanciaY = topoDaHaste.y - pontaDaBarra.y;
+        adicionarPecaDoQuatro(
+            new THREE.Vector2(0.2, Math.hypot(distanciaX, distanciaY)),
+            new THREE.Vector3((pontaDaBarra.x + topoDaHaste.x) / 2, (pontaDaBarra.y + topoDaHaste.y) / 2, 6.34),
+            -Math.atan2(distanciaX, distanciaY) // Negativo: a barra em pé tomba para a direita.
+        );
 
         // O zero é um anel de 14 Meshes: cada volta do for calcula um ângulo diferente
         // e usa cosseno para o X e seno para o Y, como pontos de uma circunferência.

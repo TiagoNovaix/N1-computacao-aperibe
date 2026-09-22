@@ -104,4 +104,4 @@ node ferramentas/gerar_texturas.js
 
 ## Onde modificar o 4
 
-Procure `AJUSTE MANUAL DO NÚMERO 4` em `index.html`. Há três chamadas de `adicionarPecaDoQuatro`: diagonal, haste vertical e barra horizontal. Em cada uma, `Vector2` define largura e altura, `Vector3` define posição e o último número define rotação em radianos. Mantenha o Z em `6.34` para que as peças continuem à frente da placa.
+Procure `AJUSTE MANUAL DO NÚMERO 4` em `index.html`. A primeira chamada de `adicionarPecaDoQuatro` é a haste vertical, a segunda é a barra horizontal e a terceira é a diagonal. `Vector2` controla largura e altura; `Vector3` controla X, Y e Z (o centro da barra); o último valor controla a rotação em radianos. A diagonal não tem ângulo digitado à mão: ela liga dois pontos, a ponta esquerda da barra e o topo da haste. `Math.hypot` calcula o comprimento entre eles e `Math.atan2` calcula a inclinação. Para mexer na diagonal, mude esses dois pontos. O Z igual a `6.34` mantém as barras visíveis à frente da placa.
