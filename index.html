@@ -40,14 +40,18 @@
             font-family: "Manrope", sans-serif;
         }
 
-        /* A aplicação ocupa toda a janela. */
+        /* A aplicação ocupa toda a janela; a primeira coluna é o painel. */
         .app {
             width: 100vw;
-            min-height: 100vh;
-            min-height: 100svh;
+            height: 100vh;
+            height: 100svh;
             display: grid;
-            grid-template-columns: minmax(18rem, 22rem) 1fr;
+            grid-template-columns: 19rem 1fr;
         }
+
+        /* Ao ocultar o painel, o canvas ganha toda a largura disponível. */
+        .app.painel-oculto { grid-template-columns: 1fr; }
+        .app.painel-oculto .info-panel { display: none; }
 
         /* Painel textual que resume os requisitos demonstrados na cena. */
         .info-panel {
@@ -57,12 +61,13 @@
             flex-direction: column;
             justify-content: space-between;
             gap: 2rem;
-            padding: clamp(1.5rem, 4vw, 3.2rem);
+            padding: clamp(1.5rem, 3vw, 2.4rem);
             border-right: 1px solid var(--line);
             background: var(--panel);
             backdrop-filter: blur(18px);
         }
 
+        /* Tipografia pequena para identificar o trabalho e as estatísticas. */
         .eyebrow {
             margin: 0 0 1rem;
             color: var(--blue);
@@ -89,6 +94,7 @@
             line-height: 1.65;
         }
 
+        /* Os quatro cartões apresentam números conferidos no código. */
         .stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -120,6 +126,7 @@
             line-height: 1.35;
         }
 
+        /* A legenda lembra os controles durante a demonstração. */
         .legend {
             display: grid;
             gap: 0.55rem;
@@ -148,8 +155,8 @@
         .viewport {
             position: relative;
             min-width: 0;
-            min-height: 100vh;
-            min-height: 100svh;
+            min-height: 0;
+            height: 100%;
             overflow: hidden;
             background: #dce8ec;
         }
@@ -158,7 +165,26 @@
             display: block;
             width: 100%;
             height: 100%;
+            cursor: grab;
+            touch-action: none;
         }
+
+        /* Este botão fica sobre o canvas, inclusive com o painel escondido. */
+        .panel-toggle {
+            position: absolute;
+            z-index: 3;
+            top: 1.35rem;
+            left: 1.35rem;
+            padding: 0.7rem 0.9rem;
+            border: 1px solid var(--line);
+            border-radius: 0.65rem;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.86);
+            font: 600 0.72rem "Manrope", sans-serif;
+            cursor: pointer;
+        }
+
+        .panel-toggle:hover { background: #ffffff; }
 
         .scene-label {
             position: absolute;
@@ -176,45 +202,50 @@
             pointer-events: none;
         }
 
+        /* Em celular, a cena fica acima do painel de informações. */
         @media (max-width: 760px) {
             body { overflow: auto; }
-            .app { display: flex; flex-direction: column; }
-            .viewport { min-height: 58svh; order: 1; }
+            .app { display: flex; flex-direction: column; height: auto; min-height: 100svh; }
+            .viewport { height: 58svh; min-height: 58svh; order: 1; }
             .info-panel { order: 2; border-top: 1px solid var(--line); border-right: 0; }
             h1 { font-size: clamp(3rem, 16vw, 4.8rem); }
+            .app.painel-oculto .viewport { height: 100svh; min-height: 100svh; }
         }
     </style>
 </head>
 
 <body>
     <main class="app">
-        <aside class="info-panel">
+        <!-- Texto HTML da interface; os objetos 3D são criados no script abaixo. -->
+        <aside class="info-panel" id="painel-de-informacoes">
             <div>
                 <p class="eyebrow">Computação gráfica · Three.js</p>
                 <h1>Clube<br>dos 40</h1>
                 <p class="description">
-                    Um passeio interativo pelo clube de Aperibé, com sede, piscina,
-                    quadra e campo de futebol construídos com geometrias simples.
+                    Um passeio interativo pelo clube de Aperibé, com sede, piscinas,
+                    quadra, campo e banheiro construídos com geometrias simples.
                 </p>
 
                 <ul class="stats" aria-label="Resumo dos requisitos">
-                    <li class="stat"><strong>35</strong><span>Meshes na cena</span></li>
+                    <li class="stat"><strong>104</strong><span>Meshes na cena</span></li>
                     <li class="stat"><strong>5</strong><span>tipos de geometria</span></li>
-                    <li class="stat"><strong>3</strong><span>texturas locais</span></li>
-                    <li class="stat"><strong>3</strong><span>animações distintas</span></li>
+                    <li class="stat"><strong>4</strong><span>texturas locais</span></li>
+                    <li class="stat"><strong>4</strong><span>animações distintas</span></li>
                 </ul>
             </div>
 
             <ul class="legend" aria-label="Interações demonstradas">
-                <li><span>Movimento da pessoa</span><code>W A S D</code></li>
+                <li><span>Andar e pular</span><code>WASD + Espaço</code></li>
+                <li><span>Câmera</span><code>arrastar + roda</code></li>
                 <li><span>LED do logo</span><code>Raycaster</code></li>
                 <li><span>Movimento periódico</span><code>Math.sin()</code></li>
             </ul>
         </aside>
 
         <section class="viewport" aria-label="Visualização do Clube dos 40 em 3D">
+            <button class="panel-toggle" id="alternar-painel" type="button" aria-controls="painel-de-informacoes" aria-expanded="true">Ocultar painel</button>
             <canvas id="scene" aria-label="Cena tridimensional interativa do Clube dos 40"></canvas>
-            <p class="scene-label">WASD para andar · clique no 40 para acender</p>
+            <p class="scene-label">Arraste para girar · Espaço para pular · clique no 40</p>
         </section>
     </main>
 
@@ -238,11 +269,33 @@
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xdce8ec);
 
+        // 42 é o campo de visão; 0.1 e 100 são as distâncias mínima e máxima visíveis.
         const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-        camera.position.set(10, 16, 18);
-        camera.lookAt(0, 1, 0);
+        // Dois ângulos e uma distância definem a vista de chegada ao clube.
+        const centroDaCamera = new THREE.Vector3(0, 0.8, 0);
+        let anguloHorizontal = 0.46;
+        let anguloVertical = 0.56;
+        let distanciaDaCamera = 38;
 
+        function atualizarCamera() {
+            // A distância mínima mantém o clube enquadrado mesmo sem o painel.
+            // Em uma tela alta e estreita, a câmera recua ainda mais.
+            const distanciaVisivel = distanciaDaCamera * Math.max(
+                1.35, canvas.clientHeight / canvas.clientWidth
+            );
+            // Seno e cosseno transformam os ângulos em posição X, Y e Z.
+            const raioNoChao = Math.cos(anguloVertical) * distanciaVisivel;
+            camera.position.set(
+                Math.sin(anguloHorizontal) * raioNoChao,
+                centroDaCamera.y + Math.sin(anguloVertical) * distanciaVisivel,
+                Math.cos(anguloHorizontal) * raioNoChao
+            );
+            camera.lookAt(centroDaCamera);
+        }
+
+        // O renderer desenha no canvas já presente no HTML.
         const canvas = document.querySelector("#scene");
+        atualizarCamera();
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -254,11 +307,12 @@
 
         const carregadorDeTextura = new THREE.TextureLoader();
 
+        // colorSpace preserva as cores do PNG; wrap permite repetir nos dois eixos.
         const texturaGrama = carregadorDeTextura.load("./texturas/grama.png");
         texturaGrama.colorSpace = THREE.SRGBColorSpace;
         texturaGrama.wrapS = THREE.RepeatWrapping;
         texturaGrama.wrapT = THREE.RepeatWrapping;
-        texturaGrama.repeat.set(9, 7);
+        texturaGrama.repeat.set(12, 10); // Mais repetições para cobrir o terreno maior.
 
         const texturaAgua = carregadorDeTextura.load("./texturas/agua.png");
         texturaAgua.colorSpace = THREE.SRGBColorSpace;
@@ -266,20 +320,25 @@
         texturaAgua.wrapT = THREE.RepeatWrapping;
         texturaAgua.repeat.set(3, 2);
 
+        // Estas duas imagens não se repetem: uma fica na sede e outra no mastro.
         const texturaLogo = carregadorDeTextura.load("./texturas/logo40.png");
         texturaLogo.colorSpace = THREE.SRGBColorSpace;
 
+        const texturaBandeira = carregadorDeTextura.load("./texturas/bandeira.png");
+        texturaBandeira.colorSpace = THREE.SRGBColorSpace;
+
+        // map recebe a textura. Os demais materiais usam somente uma cor simples.
         const materialGrama = new THREE.MeshStandardMaterial({ map: texturaGrama });
         const materialAgua = new THREE.MeshStandardMaterial({ map: texturaAgua });
         const materialLogoDaPlaca = new THREE.MeshStandardMaterial({ map: texturaLogo });
         const materialAzul = new THREE.MeshStandardMaterial({ color: 0x3975d2 });
-        const materialAzulClaro = new THREE.MeshStandardMaterial({ color: 0x6ec5d4 });
+        const materialAzulClaro = new THREE.MeshStandardMaterial({ color: 0x71969a });
         const materialLaranja = new THREE.MeshStandardMaterial({ color: 0xee7848 });
         const materialAmarelo = new THREE.MeshStandardMaterial({ color: 0xe7b23f });
         const materialVerde = new THREE.MeshStandardMaterial({ color: 0x3d9b6d });
         const materialCampo = new THREE.MeshStandardMaterial({ color: 0x2f7d48 });
         const materialCinza = new THREE.MeshStandardMaterial({ color: 0x647982 });
-        const materialMarrom = new THREE.MeshStandardMaterial({ color: 0x8d6248 });
+        const materialMarrom = new THREE.MeshStandardMaterial({ color: 0xb48255 });
         const materialBranco = new THREE.MeshStandardMaterial({ color: 0xf6f4e8 });
         const materialEscuro = new THREE.MeshStandardMaterial({ color: 0x243940 });
 
@@ -295,8 +354,9 @@
         // Mesh combina uma Geometry, que define a forma, com um Material.
         // ==================================================================
 
+        // X vai de -15 a 15; Z vai de -12 a 12. A rotação deita o plano no chão.
         const terreno = new THREE.Mesh(
-            new THREE.PlaneGeometry(18, 14),
+            new THREE.PlaneGeometry(30, 24),
             materialGrama
         );
         terreno.rotation.x = -Math.PI / 2;
@@ -310,6 +370,7 @@
         deckDaPiscina.position.set(4, 0.06, 0);
         scene.add(deckDaPiscina);
 
+        // position usa X (lado), Y (altura) e Z (frente/fundo).
         const sede = new THREE.Mesh(
             new THREE.BoxGeometry(4, 2.6, 2),
             materialAzul
@@ -322,24 +383,47 @@
             materialLaranja
         );
         telhadoDaSede.position.set(-4, 3.2, -4.2);
-        telhadoDaSede.rotation.y = Math.PI / 4;
+        telhadoDaSede.rotation.y = Math.PI / 4; // 45° para alinhar o cone quadrado.
         scene.add(telhadoDaSede);
 
         // A caixa maior aparece ao redor da água e funciona como borda da piscina.
         const bordaDaPiscina = new THREE.Mesh(
-            new THREE.BoxGeometry(4.6, 0.18, 3.2),
+            new THREE.BoxGeometry(5.2, 0.18, 3.7),
             materialBranco
         );
         bordaDaPiscina.position.set(4, 0.18, 0);
         scene.add(bordaDaPiscina);
 
         const aguaDaPiscina = new THREE.Mesh(
-            new THREE.PlaneGeometry(4.1, 2.7),
+            new THREE.PlaneGeometry(4.7, 3.2),
             materialAgua
         );
         aguaDaPiscina.rotation.x = -Math.PI / 2;
         aguaDaPiscina.position.set(4, 0.32, 0);
         scene.add(aguaDaPiscina);
+
+        // A piscina redonda usa cilindros baixos: um para a borda, outro para a água.
+        const bordaDaPiscinaRedonda = new THREE.Mesh(
+            new THREE.CylinderGeometry(2, 2, 0.22, 32),
+            materialBranco
+        );
+        bordaDaPiscinaRedonda.position.set(10.5, 0.16, 4.2);
+        scene.add(bordaDaPiscinaRedonda);
+
+        const aguaDaPiscinaRedonda = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.76, 1.76, 0.02, 32),
+            materialAgua
+        );
+        aguaDaPiscinaRedonda.position.set(10.5, 0.29, 4.2);
+        scene.add(aguaDaPiscinaRedonda);
+
+        // Um caminho liga a piscina principal à piscina redonda.
+        const caminhoDasPiscinas = new THREE.Mesh(
+            new THREE.BoxGeometry(3.4, 0.04, 1.1),
+            materialMarrom
+        );
+        caminhoDasPiscinas.position.set(8.6, 0.04, 1.1);
+        scene.add(caminhoDasPiscinas);
 
         // ==================================================================
         // 4. QUADRA E CAMPO DE FUTEBOL
@@ -350,36 +434,73 @@
             new THREE.BoxGeometry(5, 0.1, 3.6),
             materialAzulClaro
         );
-        quadra.position.set(-4.1, 0.05, 0.4);
+        quadra.position.set(-6, 0.05, 0.4);
         scene.add(quadra);
+
+        // As quatro bordas deixam a quadra reconhecível mesmo vista de longe.
+        const bordasDaQuadra = [
+            { largura: 4.7, profundidade: 0.05, x: -6, z: -1.25 },
+            { largura: 4.7, profundidade: 0.05, x: -6, z: 2.05 },
+            { largura: 0.05, profundidade: 3.3, x: -8.35, z: 0.4 },
+            { largura: 0.05, profundidade: 3.3, x: -3.65, z: 0.4 }
+        ];
+
+        for (const borda of bordasDaQuadra) {
+            const linha = new THREE.Mesh(
+                new THREE.BoxGeometry(borda.largura, 0.02, borda.profundidade),
+                materialBranco
+            );
+            linha.position.set(borda.x, 0.12, borda.z);
+            scene.add(linha);
+        }
 
         const linhaCentralDaQuadra = new THREE.Mesh(
             new THREE.BoxGeometry(0.06, 0.03, 3.2),
             materialBranco
         );
-        linhaCentralDaQuadra.position.set(-4.1, 0.12, 0.4);
+        linhaCentralDaQuadra.position.set(-6, 0.12, 0.4);
         scene.add(linhaCentralDaQuadra);
 
         const posteEsquerdoDaQuadra = new THREE.Mesh(
             new THREE.CylinderGeometry(0.07, 0.07, 2.2, 12),
             materialCinza
         );
-        posteEsquerdoDaQuadra.position.set(-4.1, 1.1, -1.25);
+        posteEsquerdoDaQuadra.position.set(-6, 1.1, -1.25);
         scene.add(posteEsquerdoDaQuadra);
 
         const posteDireitoDaQuadra = new THREE.Mesh(
             new THREE.CylinderGeometry(0.07, 0.07, 2.2, 12),
             materialCinza
         );
-        posteDireitoDaQuadra.position.set(-4.1, 1.1, 2.05);
+        posteDireitoDaQuadra.position.set(-6, 1.1, 2.05);
         scene.add(posteDireitoDaQuadra);
 
+        // O campo ocupa a área atrás das piscinas.
         const campo = new THREE.Mesh(
             new THREE.BoxGeometry(6, 0.08, 4),
             materialCampo
         );
         campo.position.set(4, 0.04, -4.5);
         scene.add(campo);
+
+        // Cinco caixas finas desenham as bordas e o meio do campo.
+        const marcacoesDoCampo = [
+            { largura: 5.8, profundidade: 0.05, x: 4, z: -6.35 },
+            { largura: 5.8, profundidade: 0.05, x: 4, z: -2.65 },
+            { largura: 0.05, profundidade: 3.7, x: 1.1, z: -4.5 },
+            { largura: 0.05, profundidade: 3.7, x: 6.9, z: -4.5 },
+            { largura: 0.05, profundidade: 3.7, x: 4, z: -4.5 }
+        ];
+
+        // A lista evita escrever cinco blocos quase iguais para as linhas.
+        for (const marcacao of marcacoesDoCampo) {
+            const linha = new THREE.Mesh(
+                new THREE.BoxGeometry(marcacao.largura, 0.02, marcacao.profundidade),
+                materialBranco
+            );
+            linha.position.set(marcacao.x, 0.1, marcacao.z);
+            scene.add(linha);
+        }
 
         // Cada gol usa dois postes verticais e uma trave horizontal.
         function criarGol(posicaoX, centroZ) {
@@ -402,26 +523,89 @@
                 materialBranco
             );
             trave.position.set(posicaoX, 1.1, centroZ);
-            trave.rotation.x = Math.PI / 2;
+            trave.rotation.x = Math.PI / 2; // Cilindro horizontal entre os postes.
             scene.add(trave);
         }
 
         criarGol(1.25, -4.5);
         criarGol(6.75, -4.5);
 
+        // ==============================================================
+        // 4.1 BANHEIRO E ÁREA DE DESCANSO
+        // Cada parte do banheiro é uma caixa ou um telhado cônico simples.
+        // ==============================================================
+
+        const banheiro = new THREE.Mesh(
+            new THREE.BoxGeometry(3.2, 2.2, 2.6),
+            materialBranco
+        );
+        banheiro.position.set(-11.2, 1.1, 4.5);
+        scene.add(banheiro);
+
+        const telhadoDoBanheiro = new THREE.Mesh(
+            new THREE.ConeGeometry(2.35, 0.8, 4),
+            materialLaranja
+        );
+        telhadoDoBanheiro.position.set(-11.2, 2.6, 4.5);
+        telhadoDoBanheiro.rotation.y = Math.PI / 4;
+        scene.add(telhadoDoBanheiro);
+
+        // Duas portas deixam claro que a casinha representa os banheiros.
+        const portaEsquerda = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8, 1.7, 0.08),
+            materialAzul
+        );
+        portaEsquerda.position.set(-11.85, 0.85, 5.84);
+        scene.add(portaEsquerda);
+
+        const portaDireita = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8, 1.7, 0.08),
+            materialAzul
+        );
+        portaDireita.position.set(-10.55, 0.85, 5.84);
+        scene.add(portaDireita);
+
+        const caminhoDoBanheiro = new THREE.Mesh(
+            new THREE.BoxGeometry(2.2, 0.04, 5),
+            materialMarrom
+        );
+        caminhoDoBanheiro.position.set(-11.2, 0.04, 8.4);
+        scene.add(caminhoDoBanheiro);
+
+        // Dois bancos: cada um tem assento e encosto feitos de caixas.
+        function criarBanco(x, z) {
+            const assento = new THREE.Mesh(
+                new THREE.BoxGeometry(1.4, 0.12, 0.5),
+                materialMarrom
+            );
+            assento.position.set(x, 0.43, z);
+            scene.add(assento);
+
+            const encosto = new THREE.Mesh(
+                new THREE.BoxGeometry(1.4, 0.7, 0.12),
+                materialMarrom
+            );
+            encosto.position.set(x, 0.8, z - 0.24);
+            scene.add(encosto);
+        }
+
+        criarBanco(7.5, 7.2);
+        criarBanco(11, 7.2);
+
         // ==================================================================
         // 5. PORTARIA E LOGO 40 EM GEOMETRIA
         // O 4 usa três caixas; o 0 usa caixas repetidas ao redor de um círculo.
         // ==================================================================
 
-        // A pista atravessa o portal e deixa clara a passagem de pessoas e carros.
+        // A pista atravessa o portal e vai até a nova borda frontal do terreno.
         const pistaDaEntrada = new THREE.Mesh(
-            new THREE.BoxGeometry(3.6, 0.06, 4.2),
+            new THREE.BoxGeometry(3.6, 0.06, 10.2),
             materialEscuro
         );
-        pistaDaEntrada.position.set(0, 0.03, 4.1);
+        pistaDaEntrada.position.set(0, 0.03, 6.9);
         scene.add(pistaDaEntrada);
 
+        // Dois pilares seguram a cobertura, deixando vão livre para passagem.
         const pilarEsquerdo = new THREE.Mesh(
             new THREE.BoxGeometry(0.38, 3, 0.5),
             materialCinza
@@ -443,24 +627,35 @@
         coberturaDaEntrada.position.set(0, 3.05, 5.3);
         scene.add(coberturaDaEntrada);
 
-        // A placa fica acima do portal, voltada para quem chega ao clube.
+        // A placa fica acima do portal e serve de fundo branco para o logo em geometria.
         const placaDaPortaria = new THREE.Mesh(
             new THREE.BoxGeometry(3, 1.7, 0.12),
-            [
-                materialLogoDaPlaca,
-                materialLogoDaPlaca,
-                materialLogoDaPlaca,
-                materialLogoDaPlaca,
-                materialBranco,
-                materialLogoDaPlaca
-            ]
+            materialBranco
         );
         placaDaPortaria.position.set(0, 3.92, 6.25);
         scene.add(placaDaPortaria);
 
+        // Placa da sede: a face da frente (índice 4) recebe a textura do logo.
+        // A ordem dos materiais de uma BoxGeometry é +X, -X, +Y, -Y, +Z, -Z.
+        const placaDaSede = new THREE.Mesh(
+            new THREE.BoxGeometry(2.2, 1.2, 0.08),
+            [
+                materialBranco,
+                materialBranco,
+                materialBranco,
+                materialBranco,
+                materialLogoDaPlaca,
+                materialBranco
+            ]
+        );
+        placaDaSede.position.set(-4, 1.8, -3.14);
+        scene.add(placaDaSede);
+
         const pecasDoLogo = [];
+        // Clicar no fundo branco também conta como clique no logo.
         pecasDoLogo.push(placaDaPortaria);
 
+        // A função evita repetir a criação da caixa três vezes.
         function adicionarPecaDoQuatro(tamanho, posicao, rotacao) {
             const peca = new THREE.Mesh(
                 new THREE.BoxGeometry(tamanho.x, tamanho.y, 0.18),
@@ -472,51 +667,57 @@
             pecasDoLogo.push(peca);
         }
 
+        // >>> AJUSTE MANUAL DO NÚMERO 4 <<<
+        // Cada chamada abaixo cria UMA das três barras do 4.
+        // Vector2(largura, altura) muda o tamanho da barra.
+        // Vector3(x, y, z) muda a posição: X esquerda/direita, Y baixo/cima.
+        // Deixe Z em 6.34 para manter o 4 à frente da placa branca.
+        // O último número gira a barra em RADIANOS; zero deixa a barra reta.
+        // 1) Diagonal: mude 0.42 para alterar a inclinação.
         adicionarPecaDoQuatro(
-            new THREE.Vector2(0.2, 1.05),
-            new THREE.Vector3(-0.88, 4.02, 6.34),
-            -0.6
+            new THREE.Vector2(0.2, 0.78),
+            new THREE.Vector3(-0.99, 4.14, 6.34),
+            0.42
         );
+        // 2) Haste vertical direita: a altura 1.25 alcança abaixo da barra.
         adicionarPecaDoQuatro(
-            new THREE.Vector2(0.2, 1.35),
-            new THREE.Vector3(-0.43, 3.91, 6.34),
+            new THREE.Vector2(0.2, 1.25),
+            new THREE.Vector3(-0.31, 3.92, 6.34),
             0
         );
+        // 3) Barra horizontal: a largura 1.17 cruza a diagonal e a haste.
         adicionarPecaDoQuatro(
-            new THREE.Vector2(1, 0.2),
-            new THREE.Vector3(-0.68, 3.81, 6.34),
+            new THREE.Vector2(1.17, 0.2),
+            new THREE.Vector3(-0.74, 3.82, 6.34),
             0
         );
 
-        // InstancedMesh repete a mesma caixa 14 vezes sem criar 14 Meshes separados.
+        // O zero é um anel de 14 Meshes: cada volta do for calcula um ângulo diferente
+        // e usa cosseno para o X e seno para o Y, como pontos de uma circunferência.
         const quantidadeDePartes = 14;
         const raioDoZero = 0.5;
-        const geometriaDoZero = new THREE.BoxGeometry(0.2, 0.44, 0.18);
-        const zeroDoLogo = new THREE.InstancedMesh(
-            geometriaDoZero,
-            materialDoLogo,
-            quantidadeDePartes
-        );
-        const objetoTemporario = new THREE.Object3D();
+        const centroDoZeroX = 0.62;
+        const centroDoZeroY = 3.92;
 
         for (let i = 0; i < quantidadeDePartes; i++) {
+            // 2π é uma volta completa; dividir por 14 espaça igualmente as peças.
             const angulo = (i / quantidadeDePartes) * Math.PI * 2;
             const x = Math.cos(angulo) * raioDoZero;
             const y = Math.sin(angulo) * raioDoZero;
 
-            objetoTemporario.position.set(x, y, 0);
-            objetoTemporario.rotation.z = angulo;
-            objetoTemporario.updateMatrix();
-            zeroDoLogo.setMatrixAt(i, objetoTemporario.matrix);
+            const pecaDoZero = new THREE.Mesh(
+                new THREE.BoxGeometry(0.2, 0.44, 0.18),
+                materialDoLogo
+            );
+            pecaDoZero.position.set(centroDoZeroX + x, centroDoZeroY + y, 6.34);
+            pecaDoZero.rotation.z = angulo;
+            scene.add(pecaDoZero);
+            pecasDoLogo.push(pecaDoZero);
         }
-
-        zeroDoLogo.position.set(0.62, 3.92, 6.34);
-        scene.add(zeroDoLogo);
-        pecasDoLogo.push(zeroDoLogo);
 
         // ==================================================================
         // 6. ÁRVORES, PESSOA E BANDEIRA
-        // Group mantém corpo e cabeça juntos para a pessoa andar como uma unidade.
+        // Group mantém todas as partes da pessoa juntas ao andar e pular.
         // ==================================================================
 
         function criarArvore(x, z) {
@@ -531,24 +732,96 @@
 
         criarArvore(-7.5, -4.8);
         criarArvore(7.5, -5);
+        // Árvores nas faixas novas deixam visível a ampliação do terreno.
+        criarArvore(-13, -8.5);
+        criarArvore(-11, -1.5);
+        criarArvore(-13.2, 10);
+        criarArvore(12.5, -8.5);
+        criarArvore(12.8, 0);
+        criarArvore(13.2, 9.5);
 
+        // Todas as partes pertencem ao Group; mover pessoa.position move o boneco inteiro.
         const pessoa = new THREE.Group();
 
+        // Camiseta, bermuda e pescoço dão ao boneco uma silhueta humana legível.
         const corpoDaPessoa = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.24, 0.3, 0.9, 12),
+            new THREE.BoxGeometry(0.58, 0.72, 0.3),
             materialAmarelo
         );
-        corpoDaPessoa.position.y = 0.55;
+        corpoDaPessoa.position.y = 1.06;
         pessoa.add(corpoDaPessoa);
 
-        const cabecaDaPessoa = new THREE.Mesh(
-            new THREE.SphereGeometry(0.24, 16, 12),
+        const bermudaDaPessoa = new THREE.Mesh(
+            new THREE.BoxGeometry(0.52, 0.26, 0.32),
+            materialAzul
+        );
+        bermudaDaPessoa.position.y = 0.59;
+        pessoa.add(bermudaDaPessoa);
+
+        const pescocoDaPessoa = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.09, 0.09, 0.17, 10),
             materialLaranja
         );
-        cabecaDaPessoa.position.y = 1.18;
+        pescocoDaPessoa.position.y = 1.51;
+        pessoa.add(pescocoDaPessoa);
+
+        const cabecaDaPessoa = new THREE.Mesh(
+            new THREE.SphereGeometry(0.26, 16, 12),
+            materialLaranja
+        );
+        cabecaDaPessoa.position.y = 1.79;
         pessoa.add(cabecaDaPessoa);
 
-        pessoa.position.set(0, 0, 4.8);
+        const cabeloDaPessoa = new THREE.Mesh(
+            new THREE.SphereGeometry(0.265, 16, 12),
+            materialEscuro
+        );
+        cabeloDaPessoa.position.y = 1.94;
+        cabeloDaPessoa.scale.set(1, 0.45, 1);
+        pessoa.add(cabeloDaPessoa);
+
+        // Olhos pequenos na face voltada para o eixo Z positivo.
+        for (const lado of [-1, 1]) {
+            const olho = new THREE.Mesh(
+                new THREE.SphereGeometry(0.025, 8, 6),
+                materialEscuro
+            );
+            olho.position.set(lado * 0.09, 1.8, 0.24);
+            pessoa.add(olho);
+
+            const braco = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.09, 0.08, 0.65, 10),
+                materialAmarelo
+            );
+            braco.position.set(lado * 0.39, 1.04, 0);
+            braco.rotation.z = lado * 0.14;
+            pessoa.add(braco);
+
+            const mao = new THREE.Mesh(
+                new THREE.SphereGeometry(0.09, 10, 8),
+                materialLaranja
+            );
+            mao.position.set(lado * 0.44, 0.69, 0);
+            pessoa.add(mao);
+
+            const perna = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1, 0.09, 0.48, 10),
+                materialAzul
+            );
+            perna.position.set(lado * 0.15, 0.28, 0);
+            pessoa.add(perna);
+
+            const tenis = new THREE.Mesh(
+                new THREE.BoxGeometry(0.22, 0.13, 0.34),
+                materialEscuro
+            );
+            tenis.position.set(lado * 0.15, 0.07, 0.08);
+            pessoa.add(tenis);
+        }
+
+        // A escala aumenta o personagem sem recalcular cada parte separada.
+        pessoa.scale.setScalar(1.2);
+        pessoa.position.set(0, 0, 9);
         scene.add(pessoa);
 
         const mastro = new THREE.Mesh(
@@ -558,8 +831,9 @@
         mastro.position.set(-1.2, 2.1, -4.2);
         scene.add(mastro);
 
+        // DoubleSide mostra a bandeira pelo lado da frente e de trás.
         const materialDaBandeira = new THREE.MeshStandardMaterial({
-            color: 0x209447,
+            map: texturaBandeira,
             side: THREE.DoubleSide
         });
         const bandeira = new THREE.Mesh(
@@ -571,27 +845,46 @@
 
         // ==================================================================
         // 7. NUVENS E ILUMINAÇÃO
-        // As nuvens são esferas achatadas para manter a modelagem simples.
+        // Cada nuvem tem três volumes arredondados agrupados, como algodão.
         // ==================================================================
 
         const materialDaNuvem = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const nuvens = [];
 
-        function criarNuvem(x, y, z, escala) {
-            const nuvem = new THREE.Mesh(
-                new THREE.SphereGeometry(0.9, 16, 12),
-                materialDaNuvem
-            );
+        function criarNuvem(x, y, z, escala, velocidade) {
+            // O Group faz os três pedaços atravessarem o céu juntos.
+            const nuvem = new THREE.Group();
+            const partes = [
+                { x: -0.65, y: 0, tamanho: 0.75 },
+                { x: 0, y: 0.3, tamanho: 1 },
+                { x: 0.75, y: 0.04, tamanho: 0.72 }
+            ];
+
+            for (const parte of partes) {
+                const volume = new THREE.Mesh(
+                    new THREE.SphereGeometry(parte.tamanho, 12, 10),
+                    materialDaNuvem
+                );
+                volume.position.set(parte.x, parte.y, 0);
+                volume.scale.z = 0.75; // Menos espessa que alta.
+                nuvem.add(volume);
+            }
+
             nuvem.position.set(x, y, z);
-            nuvem.scale.set(escala, 0.45, 0.75);
+            nuvem.scale.setScalar(escala);
             scene.add(nuvem);
-            nuvens.push(nuvem);
+            nuvens.push({ grupo: nuvem, velocidade });
         }
 
-        criarNuvem(-8, 7, -3, 1.5);
-        criarNuvem(-2, 8, -5, 1.1);
-        criarNuvem(5, 6.8, -4, 1.35);
+        // Espalhadas sobre todo o terreno; cada uma tem velocidade própria.
+        criarNuvem(-12, 8.5, -8, 1.1, 0.38);
+        criarNuvem(-5, 9.2, -6, 0.85, 0.28);
+        criarNuvem(3, 8.3, -9, 1.15, 0.35);
+        criarNuvem(10, 9.1, -5, 0.9, 0.3);
+        criarNuvem(-9, 7.8, 4, 0.8, 0.32);
+        criarNuvem(8, 8.4, 6, 0.95, 0.42);
 
+        // Luz ambiente ilumina tudo; a direcional cria lados claros e sombreados.
         const luzAmbiente = new THREE.AmbientLight(0xffffff, 1.1);
         scene.add(luzAmbiente);
 
@@ -605,8 +898,22 @@
         // ==================================================================
 
         const teclas = { w: false, a: false, s: false, d: false };
+        // Estas duas variáveis guardam o estado do salto entre os quadros.
+        let pulando = false;
+        let tempoDoPulo = 0;
 
         window.addEventListener("keydown", (event) => {
+            // Espaço inicia apenas um pulo por vez e não rola a página.
+            if (event.code === "Space") {
+                event.preventDefault();
+                if (!pulando) {
+                    pulando = true;
+                    tempoDoPulo = 0;
+                }
+                return;
+            }
+
+            // toLowerCase permite usar WASD mesmo com Caps Lock ativado.
             const tecla = event.key.toLowerCase();
             if (tecla in teclas) {
                 teclas[tecla] = true;
@@ -614,6 +921,7 @@
         });
 
         window.addEventListener("keyup", (event) => {
+            if (event.code === "Space") event.preventDefault();
             const tecla = event.key.toLowerCase();
             if (tecla in teclas) {
                 teclas[tecla] = false;
@@ -621,6 +929,7 @@
         });
 
         function moverPessoa(delta) {
+            // Multiplicar por delta (segundos entre quadros) mantém a velocidade estável.
             const distancia = 2.8 * delta;
 
             if (teclas.w) pessoa.position.z -= distancia;
@@ -628,8 +937,23 @@
             if (teclas.a) pessoa.position.x -= distancia;
             if (teclas.d) pessoa.position.x += distancia;
 
-            pessoa.position.x = THREE.MathUtils.clamp(pessoa.position.x, -8, 8);
-            pessoa.position.z = THREE.MathUtils.clamp(pessoa.position.z, -6, 6);
+            // clamp prende o boneco dentro dos novos limites do terreno.
+            pessoa.position.x = THREE.MathUtils.clamp(pessoa.position.x, -14, 14);
+            pessoa.position.z = THREE.MathUtils.clamp(pessoa.position.z, -11, 11);
+        }
+
+        function atualizarPulo(delta) {
+            if (!pulando) return;
+
+            tempoDoPulo += delta;
+            if (tempoDoPulo >= 0.8) {
+                pessoa.position.y = 0;
+                pulando = false;
+                return;
+            }
+
+            // Meio ciclo do seno sobe e desce, terminando no chão.
+            pessoa.position.y = Math.sin((tempoDoPulo / 0.8) * Math.PI) * 0.85;
         }
 
         // ==================================================================
@@ -640,8 +964,73 @@
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         let logoAceso = false;
+        // Guardamos o início e a última posição para diferenciar clique de arrasto.
+        let arrastandoCamera = false;
+        let arrastouCamera = false;
+        let inicioX = 0;
+        let inicioY = 0;
+        let ultimoX = 0;
+        let ultimoY = 0;
+
+        canvas.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0) return;
+            arrastandoCamera = true;
+            arrastouCamera = false;
+            inicioX = ultimoX = event.clientX;
+            inicioY = ultimoY = event.clientY;
+            // Continua recebendo o arrasto mesmo se o ponteiro passar da borda.
+            canvas.setPointerCapture(event.pointerId);
+            canvas.style.cursor = "grabbing";
+        });
+
+        canvas.addEventListener("pointermove", (event) => {
+            if (!arrastandoCamera) return;
+
+            const movimentoX = event.clientX - ultimoX;
+            const movimentoY = event.clientY - ultimoY;
+            ultimoX = event.clientX;
+            ultimoY = event.clientY;
+
+            // Cinco pixels separam um clique parado de um gesto de arrastar.
+            if (Math.hypot(event.clientX - inicioX, event.clientY - inicioY) > 5) {
+                arrastouCamera = true;
+            }
+
+            // Movimento horizontal gira ao redor; vertical eleva ou abaixa a vista.
+            anguloHorizontal -= movimentoX * 0.006;
+            anguloVertical = THREE.MathUtils.clamp(
+                anguloVertical + movimentoY * 0.006, 0.15, 1.45
+            );
+            atualizarCamera();
+        });
+
+        canvas.addEventListener("pointerup", () => {
+            arrastandoCamera = false;
+            canvas.style.cursor = "grab";
+        });
+
+        canvas.addEventListener("pointercancel", () => {
+            arrastandoCamera = false;
+            canvas.style.cursor = "grab";
+        });
+
+        canvas.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            // A roda aproxima ou afasta; os limites evitam zoom exagerado.
+            distanciaDaCamera = THREE.MathUtils.clamp(
+                distanciaDaCamera + Math.sign(event.deltaY) * 1.4, 13, 48
+            );
+            atualizarCamera();
+        }, { passive: false });
 
         canvas.addEventListener("click", (event) => {
+            // Depois de arrastar, o clique não deve acender o logo por acidente.
+            if (arrastouCamera) {
+                arrastouCamera = false;
+                return;
+            }
+
+            // Converte pixels do canvas para coordenadas normalizadas (-1 até 1).
             const limitesDoCanvas = canvas.getBoundingClientRect();
             mouse.x = ((event.clientX - limitesDoCanvas.left) / limitesDoCanvas.width) * 2 - 1;
             mouse.y = -((event.clientY - limitesDoCanvas.top) / limitesDoCanvas.height) * 2 + 1;
@@ -650,6 +1039,7 @@
             const objetosAtingidos = raycaster.intersectObjects(pecasDoLogo);
 
             if (objetosAtingidos.length > 0) {
+                // Todos os fragmentos compartilham o material emissivo.
                 logoAceso = !logoAceso;
                 materialDoLogo.emissive.set(logoAceso ? 0xffd54a : 0x000000);
                 materialDoLogo.emissiveIntensity = logoAceso ? 1.8 : 0;
@@ -665,33 +1055,50 @@
             const largura = canvas.clientWidth;
             const altura = canvas.clientHeight;
 
+            // Canvas e projeção devem acompanhar a largura disponível.
             renderer.setSize(largura, altura, false);
             camera.aspect = largura / altura;
             camera.updateProjectionMatrix();
+            atualizarCamera();
         }
 
         atualizarTamanho();
         window.addEventListener("resize", atualizarTamanho);
 
+        // O botão alterna uma classe CSS e depois recalcula a câmera e o canvas.
+        const aplicativo = document.querySelector(".app");
+        const botaoDoPainel = document.querySelector("#alternar-painel");
+        botaoDoPainel.addEventListener("click", () => {
+            const oculto = aplicativo.classList.toggle("painel-oculto");
+            botaoDoPainel.textContent = oculto ? "Mostrar painel" : "Ocultar painel";
+            botaoDoPainel.setAttribute("aria-expanded", String(!oculto));
+            atualizarTamanho();
+        });
+
         const relogio = new THREE.Clock();
-        const velocidadesDasNuvens = [0.45, 0.3, 0.38];
 
         function animar() {
+            // delta mede um quadro; tempoDecorrido mede desde o início da cena.
             const delta = relogio.getDelta();
             const tempoDecorrido = relogio.elapsedTime;
 
             moverPessoa(delta);
+            atualizarPulo(delta);
 
-            nuvens.forEach((nuvem, indice) => {
-                nuvem.position.x += velocidadesDasNuvens[indice] * delta;
-                if (nuvem.position.x > 10) {
-                    nuvem.position.x = -10;
+            // Ao sair pela direita, cada nuvem reaparece à esquerda.
+            nuvens.forEach((nuvem) => {
+                nuvem.grupo.position.x += nuvem.velocidade * delta;
+                if (nuvem.grupo.position.x > 17) {
+                    nuvem.grupo.position.x = -17;
                 }
             });
 
+            // Seno produz oscilações suaves para bandeira e duas águas.
             bandeira.rotation.y = Math.sin(tempoDecorrido * 3) * 0.18;
             aguaDaPiscina.position.y = 0.32 + Math.sin(tempoDecorrido * 2) * 0.015;
+            aguaDaPiscinaRedonda.position.y = 0.29 + Math.sin(tempoDecorrido * 2) * 0.012;
 
+            // Renderiza novamente após atualizar posições.
             renderer.render(scene, camera);
         }
 

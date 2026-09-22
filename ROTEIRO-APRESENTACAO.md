@@ -5,35 +5,36 @@ Tempo previsto: aproximadamente 4 minutos.
 ## 1. Tiago — visão geral e base do Three.js (0:00 a 1:20)
 
 1. Apresente o tema: “Evoluímos a Mini Aperibé para uma representação interativa do Clube dos 40.”
-2. Mostre na tela o portal, a sede, a piscina com deck, a quadra e o campo ao fundo.
+2. Mostre a vista de chegada: portal na frente, duas piscinas, quadra, campo, banheiro e bancos. O terreno passou a medir 30 × 24 unidades.
 3. Abra a seção 1 do código e explique:
    - `Scene` guarda todos os elementos 3D;
    - `PerspectiveCamera` define o ponto de vista com profundidade;
    - `WebGLRenderer` desenha a cena no `canvas`.
 4. Abra a seção 2 e mostre o `TextureLoader`.
-5. Destaque `wrapS`, `wrapT` e `repeat.set(9, 7)` na textura de grama.
+5. Destaque `wrapS`, `wrapT` e `repeat.set(12, 10)` na textura de grama.
 
 Frase de passagem: “Depois de preparar a cena e os materiais, construímos o clube só com geometrias simples.”
 
 ## 2. Raphael — objetos, logo e animações (1:20 a 2:40)
 
-1. Mostre sede, deck da piscina, quadra, campo, gols e árvores.
+1. Mostre sede, deck, piscina redonda, banheiro, bancos, quadra, campo, gols e árvores. As linhas brancas são caixas bem finas.
 2. Explique que todo `Mesh` combina uma geometria e um material.
 3. Mostre o logo 40:
-   - o 4 tem três `BoxGeometry`;
-   - o 0 repete uma caixa 14 vezes;
+   - o 4 tem três `BoxGeometry`: diagonal, barra horizontal e haste vertical;
+   - o 0 repete uma caixa 14 vezes dentro de um `for`;
+   - o comentário `AJUSTE MANUAL DO NÚMERO 4` indica onde mudar tamanho, posição e rotação de cada barra;
    - o ângulo muda a cada volta do `for`;
    - `Math.cos()` calcula X e `Math.sin()` calcula Y.
 4. Mostre o final do loop de animação:
-   - nuvens somam uma distância em X e voltam ao início;
-   - bandeira oscila com `Math.sin()`;
+   - cada uma das seis nuvens é um `Group` de três esferas e se move em X;
+   - bandeira usa uma textura do Brasil e oscila com `Math.sin()`;
    - água varia levemente de altura.
 
 Frase de passagem: “Além de animar a cena, usamos teclado e mouse para o usuário participar.”
 
 ## 3. Herick — interações e fechamento (2:40 a 4:00)
 
-1. Demonstre W, A, S e D movendo a pessoa.
+1. Demonstre W, A, S e D movendo a pessoa, Espaço fazendo-a pular, o arrasto girando a câmera e o botão que oculta ou mostra o painel.
 2. Explique que `keydown` marca uma tecla como verdadeira e `keyup` volta para falsa.
 3. Mostre `THREE.MathUtils.clamp`, que impede a pessoa de sair do terreno.
 4. Clique no logo 40 da placa de entrada para acender e apagar.
@@ -42,13 +43,29 @@ Frase de passagem: “Além de animar a cena, usamos teclado e mouse para o usu�
    - `setFromCamera()` cria o raio a partir da câmera;
    - `intersectObjects()` verifica se uma peça do logo foi atingida;
    - `emissive` faz o material parecer aceso.
-6. Feche citando os números: 35 meshes, 5 geometrias, 3 texturas e 3 animações.
+6. Feche citando os números: 104 meshes, 5 geometrias, 4 texturas e 4 animações.
 
 ## Perguntas prováveis do professor
 
 ### O que são Scene, Camera e Renderer?
 
 `Scene` é o contêiner dos objetos, luzes e grupos. `Camera` define de onde a cena é observada. `Renderer` transforma essas informações em pixels no canvas.
+
+### Por que a câmera está nessa posição?
+
+Dois ângulos e uma distância definem a posição da câmera. `lookAt(centroDaCamera)` a mantém apontada para o clube. O arrasto muda os ângulos; a roda muda a distância.
+
+### Como funciona o pulo?
+
+Espaço inicia o pulo. No loop, `tempoDoPulo` cresce com `delta`; meio ciclo de `Math.sin()` eleva a pessoa e a traz de volta ao chão em 0,8 segundo.
+
+### Por que arrastar não acende o 40?
+
+O código mede quanto o ponteiro se moveu. Se passou de cinco pixels, foi um arrasto e o clique seguinte não usa o `Raycaster`.
+
+### Como foram feitas as linhas da quadra e do campo?
+
+Cada linha é uma `BoxGeometry` bem fina e branca. Os dois `for` percorrem as listas de posições e tamanhos: quatro caixas contornam a quadra e cinco marcam o campo.
 
 ### O que é Geometry, Material e Mesh?
 
@@ -64,11 +81,19 @@ Porque ele calcula como a luz bate na superfície. Sem uma luz na cena, esse mat
 
 ### O que o repeat faz na textura?
 
-Ele repete a imagem em vez de esticá-la uma única vez. `repeat.set(9, 7)` desenha nove repetições no eixo horizontal e sete no vertical.
+Ele repete a imagem em vez de esticá-la uma única vez. `repeat.set(12, 10)` desenha doze repetições no eixo horizontal e dez no vertical, cobrindo o terreno maior.
 
 ### Por que configurar wrapS e wrapT?
 
 Essas propriedades autorizam a repetição da textura nos dois eixos. `S` corresponde ao horizontal e `T` ao vertical.
+
+### Como a bandeira do Brasil foi feita?
+
+O script gera um PNG com fundo verde, losango amarelo e círculo azul. O `TextureLoader` carrega esse arquivo e o `map` aplica a imagem ao plano da bandeira.
+
+### Por que a bandeira usa DoubleSide?
+
+Um plano normalmente aparece apenas pelo lado da frente. `THREE.DoubleSide` permite enxergar a textura também quando a câmera olha o verso da bandeira.
 
 ### O que é elapsedTime?
 
@@ -108,11 +133,27 @@ Raster é uma imagem formada por uma grade de pixels, como os PNGs das texturas.
 
 ### Por que a pessoa é um Group?
 
-Porque corpo e cabeça são meshes separados. Ao mover o grupo, as duas partes se movem juntas.
+Porque camiseta, bermuda, cabeça, cabelo, olhos, braços, mãos, pernas e tênis são meshes separados. Ao mover o grupo, todas as 15 partes se movem juntas.
 
-### O que é InstancedMesh no número zero?
+### Como as nuvens deixaram de ser ovais?
 
-É uma forma de desenhar várias cópias da mesma geometria e do mesmo material como um único Mesh. O `for` cria uma matriz de posição e rotação para cada uma das 14 caixas.
+Cada nuvem é um `Group` com três esferas de tamanhos e alturas diferentes. Mover o grupo faz os três volumes viajarem juntos. Há seis grupos espalhados sobre o terreno.
+
+### Como esconder o painel aumenta a área da cena?
+
+O botão acrescenta ou remove a classe CSS `painel-oculto` na aplicação. A classe esconde o painel e dá toda a largura ao canvas; `atualizarTamanho()` corrige o tamanho do renderer e a proporção da câmera.
+
+### Como é feita a piscina redonda?
+
+Dois cilindros bem baixos, um branco e outro com a textura da água, formam borda e superfície. A superfície varia um pouco de altura no loop de animação.
+
+### Onde alterar manualmente o 4?
+
+Procure `AJUSTE MANUAL DO NÚMERO 4` em `index.html`. A primeira chamada é a diagonal, a segunda é a haste vertical e a terceira é a barra horizontal. `Vector2` controla largura e altura; `Vector3` controla X, Y e Z; o último valor controla a rotação. O Z igual a `6.34` mantém as barras visíveis à frente da placa.
+
+### Como as 14 caixas do zero são criadas?
+
+Um `for` roda 14 vezes. A cada volta ele calcula um ângulo, cria um `Mesh` de `BoxGeometry` e o posiciona na borda da circunferência. Todas compartilham o mesmo material, por isso acendem juntas.
 
 ### Como Math.cos() e Math.sin() formam o zero?
 
