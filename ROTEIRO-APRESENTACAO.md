@@ -59,6 +59,10 @@ Dois ângulos e uma distância definem a posição da câmera. `lookAt(centroDaC
 
 Espaço inicia o pulo. No loop, `tempoDoPulo` cresce com `delta`; meio ciclo de `Math.sin()` eleva a pessoa e a traz de volta ao chão em 0,8 segundo.
 
+### Como a pessoa vira para onde está andando?
+
+As teclas viram duas direções, `direcaoX` e `direcaoZ`, que valem -1, 0 ou 1. O boneco foi montado com o rosto para +Z, e `Math.atan2(direcaoX, direcaoZ)` devolve o ângulo de `rotation.y` que aponta o rosto para essa direção: D dá 90°, W dá 180°, e W+D dá 135°, a diagonal. Parado, as duas direções são zero, então o ângulo não é recalculado e o boneco continua olhando para onde ia.
+
 ### Por que arrastar não acende o 40?
 
 O código mede quanto o ponteiro se moveu. Se passou de cinco pixels, foi um arrasto e o clique seguinte não usa o `Raycaster`.

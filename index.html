@@ -673,10 +673,24 @@
             // Multiplicar por delta (segundos entre quadros) mantém a velocidade estável.
             const distancia = 2.8 * delta;
 
-            if (teclas.w) pessoa.position.z -= distancia;
-            if (teclas.s) pessoa.position.z += distancia;
-            if (teclas.a) pessoa.position.x -= distancia;
-            if (teclas.d) pessoa.position.x += distancia;
+            // direcaoX e direcaoZ valem -1, 0 ou 1 e dizem para onde a pessoa está indo.
+            let direcaoX = 0;
+            let direcaoZ = 0;
+            if (teclas.w) direcaoZ -= 1;
+            if (teclas.s) direcaoZ += 1;
+            if (teclas.a) direcaoX -= 1;
+            if (teclas.d) direcaoX += 1;
+
+            pessoa.position.x += direcaoX * distancia;
+            pessoa.position.z += direcaoZ * distancia;
+
+            // O rosto do boneco foi montado olhando para +Z. Math.atan2 transforma a
+            // direção (X, Z) no ângulo de rotation.y que vira o rosto para ela:
+            // D = 90°, S = 0°, A = -90°, W = 180°, e as diagonais ficam no meio.
+            // Parado, o boneco mantém o último ângulo em vez de voltar para a frente.
+            if (direcaoX !== 0 || direcaoZ !== 0) {
+                pessoa.rotation.y = Math.atan2(direcaoX, direcaoZ);
+            }
 
             // clamp prende o boneco dentro dos limites do terreno.
             pessoa.position.x = THREE.MathUtils.clamp(pessoa.position.x, -14, 14);
