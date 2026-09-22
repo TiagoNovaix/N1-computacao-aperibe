@@ -65,11 +65,23 @@ O código mede quanto o ponteiro se moveu. Se passou de cinco pixels, foi um arr
 
 ### Como foram feitas as linhas da quadra e do campo?
 
-Cada linha é uma `BoxGeometry` bem fina e branca. Os dois `for` percorrem as listas de posições e tamanhos: quatro caixas contornam a quadra e cinco marcam o campo.
+Cada linha é uma `BoxGeometry` bem fina e branca. Os dois `for` percorrem as listas de posições e tamanhos: cinco caixas marcam a quadra (quatro bordas e a linha central) e cinco marcam o campo.
 
 ### O que é Geometry, Material e Mesh?
 
 `Geometry` define a forma e os vértices. `Material` define a aparência. `Mesh` junta os dois para formar um objeto visível.
+
+### O que a função adicionar faz?
+
+Todo objeto passa pelos mesmos três passos: `new THREE.Mesh(geometria, material)`, `position.set(x, y, z)` e `scene.add(...)`. A função `adicionar` faz os três e devolve o Mesh, para que ainda dê para mudar `rotation` ou `scale` depois. O último parâmetro, `pai`, vale `scene` por padrão; nas partes da pessoa e das nuvens ele recebe o `Group`, então a peça entra no grupo em vez da cena.
+
+### Por que várias peças usam a mesma geometria?
+
+As 14 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
+
+### O que acontece se a janela perder o foco com uma tecla apertada?
+
+O `keyup` nunca chegaria e a pessoa andaria sozinha. O evento `blur` da janela solta todas as teclas. E o `delta` é limitado a 0,05 segundo com `Math.min`: ao voltar de outra aba, ele viria com vários segundos de uma vez e a pessoa daria um salto.
 
 ### Por que MeshStandardMaterial precisa de luz?
 

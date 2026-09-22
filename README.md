@@ -33,6 +33,8 @@ Foram usados cinco tipos de geometria:
 
 Os objetos usam `position` para ocupar pontos diferentes dos eixos X, Y e Z, `rotation` para inclinar planos e orientar peças, e `scale` para achatar as nuvens.
 
+Quase todos os Meshes são criados pela função `adicionar(geometria, material, x, y, z, pai)`, que junta os três passos repetidos (criar o Mesh, posicionar e adicionar à cena ou a um `Group`). Peças de forma idêntica, como as 14 do zero e as 8 árvores, compartilham uma única geometria.
+
 ## Números da cena
 
 - **104 Meshes:** o zero do logo usa 14 caixas, as seis nuvens usam três volumes cada, e a pessoa tem 15 partes;
