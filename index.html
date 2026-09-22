@@ -227,7 +227,7 @@
                 </p>
 
                 <ul class="stats" aria-label="Resumo dos requisitos">
-                    <li class="stat"><strong>104</strong><span>Meshes na cena</span></li>
+                    <li class="stat"><strong>118</strong><span>Meshes na cena</span></li>
                     <li class="stat"><strong>5</strong><span>tipos de geometria</span></li>
                     <li class="stat"><strong>4</strong><span>texturas locais</span></li>
                     <li class="stat"><strong>4</strong><span>animações distintas</span></li>
@@ -526,17 +526,19 @@
             -Math.atan2(distanciaX, distanciaY) // Negativo: a barra em pé tomba para a direita.
         );
 
-        // O zero é um anel de 14 Meshes: cada volta do for calcula um ângulo diferente
+        // O zero é um anel de 28 Meshes: cada volta do for calcula um ângulo diferente
         // e usa cosseno para o X e seno para o Y, como pontos de uma circunferência.
-        const quantidadeDePartes = 14;
+        const quantidadeDePartes = 28;
         const raioDoZero = 0.5;
         const centroDoZeroX = 0.62;
         const centroDoZeroY = 3.92;
-        // As 14 peças são iguais, então todas usam a mesma geometria.
-        const geometriaDaPecaDoZero = new THREE.BoxGeometry(0.2, 0.44, 0.18);
+        // As 28 peças são iguais, então todas usam a mesma geometria.
+        // Cada uma tem 0.13 de comprimento, um pouco mais que o espaço entre elas
+        // (2π × 0.5 ÷ 28 ≈ 0.11), para encostarem sem deixar a borda serrilhada.
+        const geometriaDaPecaDoZero = new THREE.BoxGeometry(0.2, 0.13, 0.18);
 
         for (let i = 0; i < quantidadeDePartes; i++) {
-            // 2π é uma volta completa; dividir por 14 espaça igualmente as peças.
+            // 2π é uma volta completa; dividir por 28 espaça igualmente as peças.
             const angulo = (i / quantidadeDePartes) * Math.PI * 2;
             const x = Math.cos(angulo) * raioDoZero;
             const y = Math.sin(angulo) * raioDoZero;

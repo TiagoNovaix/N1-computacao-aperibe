@@ -10,7 +10,7 @@
 
 O projeto representa o **Clube dos 40**, de Aperibé/RJ, em uma cena 3D interativa. O terreno de 30 × 24 unidades mostra o portal na frente, duas piscinas (uma redonda), quadra, campo, sede, banheiro, bancos, árvores e bandeira do Brasil. Uma pessoa controlada pelo teclado passeia pelo clube.
 
-O logo “40” aparece na placa acima do portal por onde passam pessoas e carros. O número 4 usa uma diagonal, uma barra horizontal e uma haste vertical, feitas com três caixas. O número 0 usa 14 meshes de caixa, posicionados em círculo com `Math.cos()` e `Math.sin()`. Ao clicar na placa ou nas peças do logo, o material alterna entre apagado e aceso.
+O logo “40” aparece na placa acima do portal por onde passam pessoas e carros. O número 4 usa uma diagonal, uma barra horizontal e uma haste vertical, feitas com três caixas. O número 0 usa 28 meshes de caixa, posicionados em círculo com `Math.cos()` e `Math.sin()`. Ao clicar na placa ou nas peças do logo, o material alterna entre apagado e aceso.
 
 ## Tecnologias utilizadas
 
@@ -33,11 +33,11 @@ Foram usados cinco tipos de geometria:
 
 Os objetos usam `position` para ocupar pontos diferentes dos eixos X, Y e Z, `rotation` para inclinar planos e orientar peças, e `scale` para achatar as nuvens.
 
-Quase todos os Meshes são criados pela função `adicionar(geometria, material, x, y, z, pai)`, que junta os três passos repetidos (criar o Mesh, posicionar e adicionar à cena ou a um `Group`). Peças de forma idêntica, como as 14 do zero e as 8 árvores, compartilham uma única geometria.
+Quase todos os Meshes são criados pela função `adicionar(geometria, material, x, y, z, pai)`, que junta os três passos repetidos (criar o Mesh, posicionar e adicionar à cena ou a um `Group`). Peças de forma idêntica, como as 28 do zero e as 8 árvores, compartilham uma única geometria.
 
 ## Números da cena
 
-- **104 Meshes:** o zero do logo usa 14 caixas, as seis nuvens usam três volumes cada, e a pessoa tem 15 partes;
+- **118 Meshes:** o zero do logo usa 28 caixas, as seis nuvens usam três volumes cada, e a pessoa tem 15 partes;
 - **5 tipos de geometria;**
 - **4 texturas locais:** grama, água, logo na placa da sede e bandeira do Brasil;
 - **4 animações:** nuvens, bandeira, água e pulo da pessoa.

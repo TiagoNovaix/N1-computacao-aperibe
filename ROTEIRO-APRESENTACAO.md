@@ -21,7 +21,7 @@ Frase de passagem: “Depois de preparar a cena e os materiais, construímos o c
 2. Explique que todo `Mesh` combina uma geometria e um material.
 3. Mostre o logo 40:
    - o 4 tem três `BoxGeometry`: diagonal, barra horizontal e haste vertical;
-   - o 0 repete uma caixa 14 vezes dentro de um `for`;
+   - o 0 repete uma caixa 28 vezes dentro de um `for`;
    - o comentário `AJUSTE MANUAL DO NÚMERO 4` indica onde mudar tamanho, posição e rotação de cada barra;
    - o ângulo muda a cada volta do `for`;
    - `Math.cos()` calcula X e `Math.sin()` calcula Y.
@@ -43,7 +43,7 @@ Frase de passagem: “Além de animar a cena, usamos teclado e mouse para o usu�
    - `setFromCamera()` cria o raio a partir da câmera;
    - `intersectObjects()` verifica se uma peça do logo foi atingida;
    - `emissive` faz o material parecer aceso.
-6. Feche citando os números: 104 meshes, 5 geometrias, 4 texturas e 4 animações.
+6. Feche citando os números: 118 meshes, 5 geometrias, 4 texturas e 4 animações.
 
 ## Perguntas prováveis do professor
 
@@ -81,7 +81,7 @@ Todo objeto passa pelos mesmos três passos: `new THREE.Mesh(geometria, material
 
 ### Por que várias peças usam a mesma geometria?
 
-As 14 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
+As 28 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
 
 ### O que acontece se a janela perder o foco com uma tecla apertada?
 
@@ -167,9 +167,9 @@ Dois cilindros bem baixos, um branco e outro com a textura da água, formam bord
 
 Procure `AJUSTE MANUAL DO NÚMERO 4` em `index.html`. A primeira chamada de `adicionarPecaDoQuatro` é a haste vertical, a segunda é a barra horizontal e a terceira é a diagonal. `Vector2` controla largura e altura; `Vector3` controla X, Y e Z (o centro da barra); o último valor controla a rotação em radianos. A diagonal não tem ângulo digitado à mão: ela liga dois pontos, a ponta esquerda da barra e o topo da haste. `Math.hypot` calcula o comprimento entre eles e `Math.atan2` calcula a inclinação. Para mexer na diagonal, mude esses dois pontos. O Z igual a `6.34` mantém as barras visíveis à frente da placa.
 
-### Como as 14 caixas do zero são criadas?
+### Como as 28 caixas do zero são criadas?
 
-Um `for` roda 14 vezes. A cada volta ele calcula um ângulo, cria um `Mesh` de `BoxGeometry` e o posiciona na borda da circunferência. Todas compartilham o mesmo material, por isso acendem juntas.
+Um `for` roda 28 vezes. A cada volta ele calcula um ângulo, cria um `Mesh` de `BoxGeometry` e o posiciona na borda da circunferência. Todas compartilham o mesmo material, por isso acendem juntas.
 
 ### Como Math.cos() e Math.sin() formam o zero?
 
