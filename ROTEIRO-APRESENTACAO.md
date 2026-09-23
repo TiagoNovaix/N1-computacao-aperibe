@@ -1,57 +1,50 @@
 # Roteiro de apresentação — Clube dos 40
 
-Tempo previsto: aproximadamente 4 minutos. A ordem de fala é Tiago, Raphael, Herick e Tiago de novo para fechar.
+Tempo previsto: 4 minutos, divididos igualmente: cerca de 1 minuto e 20 segundos para cada integrante. Cada um explica um terço do código e estuda um terço das perguntas (11, 12 e 11), com partes fáceis e difíceis para todos.
 
-## 1. Tiago — tema, passeio pela cena e base do Three.js (0:00 a 1:00)
+## 1. Tiago — tema, base do Three.js e texturas (0:00 a 1:20)
 
 1. Apresente o tema: “Evoluímos a Mini Aperibé para uma representação interativa do Clube dos 40, clube recreativo de Aperibé.”
-2. Mostre a cena funcionando, sem abrir o código ainda:
-   - o portal com o logo 40 na frente, as duas piscinas, a quadra, o campo, o banheiro, os bancos e a sede;
-   - ande com W, A, S e D, pule com Espaço e arraste para girar a câmera;
-   - clique no 40 para acender e apagar.
-3. Abra a seção 1 do código e explique os três elementos básicos:
+2. Mostre a vista de chegada: portal com o logo 40, duas piscinas, quadra, campo, banheiro, bancos e sede.
+3. Abra a seção 1 do código e explique:
    - `Scene` guarda todos os elementos 3D;
    - `PerspectiveCamera` define o ponto de vista com profundidade;
    - `WebGLRenderer` desenha a cena no `canvas`.
+4. Abra a seção 2:
+   - todo `Mesh` combina uma geometria (a forma) e um material (a aparência);
+   - a função `adicionar` cria o `Mesh`, posiciona e adiciona à cena em uma linha;
+   - o `TextureLoader` carrega as imagens, e `wrapS`, `wrapT` e `repeat.set(12, 10)` repetem a grama pelo terreno.
 
-Frase de passagem: “O Raphael vai mostrar como o clube foi construído.”
+Frase de passagem: “Com a base pronta, o Raphael mostra os objetos e o que se mexe na cena.”
 
-## 2. Raphael — construção do clube, texturas e logo (1:00 a 2:30)
+## 2. Raphael — objetos, logo e animações (1:20 a 2:40)
 
-1. Explique que todo `Mesh` combina uma geometria (a forma) e um material (a aparência).
-2. Abra a seção 2 e mostre a função `adicionar`: ela cria o `Mesh`, posiciona e adiciona à cena, então cada objeto ocupa uma linha só.
-3. Mostre as texturas no `TextureLoader`:
-   - `wrapS`, `wrapT` e `repeat.set(12, 10)` repetem a grama pelo terreno;
-   - a bandeira usa `DoubleSide` para aparecer pelos dois lados.
-4. Mostre sede, piscinas, quadra, campo, gols e árvores. As linhas brancas são caixas bem finas, criadas por um `for` sobre uma lista.
-5. Mostre o logo 40:
+1. Mostre sede, piscinas, quadra, campo, gols e árvores. As linhas brancas são caixas bem finas, criadas por um `for` sobre uma lista.
+2. Mostre o logo 40:
    - o 4 tem três `BoxGeometry`: haste vertical, barra horizontal e diagonal;
    - a diagonal liga dois pontos: `Math.hypot` dá o comprimento e `Math.atan2` dá a inclinação;
    - o 0 repete uma caixa 28 vezes dentro de um `for`;
    - a cada volta, `Math.cos()` calcula X e `Math.sin()` calcula Y.
-
-Frase de passagem: “Com o clube montado, o Herick mostra o que se mexe e como o usuário interage.”
-
-## 3. Herick — animações e interações (2:30 a 3:45)
-
-1. Abra o loop de animação e explique `delta` e `elapsedTime`:
-   - as seis nuvens andam em X e voltam ao início ao sair do terreno;
-   - a bandeira oscila com `Math.sin()`;
+3. Abra o loop de animação:
+   - as seis nuvens são `Group`s de três esferas que andam em X, usando `delta`;
+   - a bandeira oscila com `Math.sin()` e `elapsedTime`;
    - a água das piscinas sobe e desce levemente.
-2. Mostre o teclado: `keydown` marca a tecla como verdadeira e `keyup` volta para falsa.
-3. Mostre `THREE.MathUtils.clamp`, que impede a pessoa de sair do terreno, e `Math.atan2`, que vira o rosto dela para onde anda.
-4. Explique o caminho do clique no logo:
+
+Frase de passagem: “Além de animar a cena, usamos teclado e mouse para o usuário participar. Quem mostra é o Herick.”
+
+## 3. Herick — interações e fechamento (2:40 a 4:00)
+
+1. Demonstre W, A, S e D movendo a pessoa, Espaço fazendo-a pular e o arrasto girando a câmera.
+2. Explique o teclado:
+   - `keydown` marca a tecla como verdadeira e `keyup` volta para falsa;
+   - `THREE.MathUtils.clamp` impede a pessoa de sair do terreno;
+   - `Math.atan2` vira o rosto dela para onde anda.
+3. Clique no logo 40 para acender e apagar, e explique o caminho do clique:
    - a coordenada do mouse vira um valor entre -1 e 1;
    - `setFromCamera()` cria o raio a partir da câmera;
    - `intersectObjects()` verifica se uma peça do logo foi atingida;
    - `emissive` faz o material parecer aceso.
-
-Frase de passagem: “Para fechar, o Tiago resume o projeto.”
-
-## 4. Tiago — fechamento (3:45 a 4:00)
-
-1. Cite os números: 118 Meshes, 5 tipos de geometria, 4 texturas e 4 animações.
-2. Agradeça e abra para perguntas.
+4. Feche citando os números: 118 Meshes, 5 tipos de geometria, 4 texturas e 4 animações.
 
 ---
 
@@ -59,7 +52,7 @@ Frase de passagem: “Para fechar, o Tiago resume o projeto.”
 
 Cada um estuda primeiro as próprias perguntas. O professor pode perguntar qualquer coisa a qualquer um, então vale ler as dos outros depois.
 
-## Perguntas do Tiago — conceitos gerais
+## Perguntas do Tiago — base do Three.js, materiais e texturas (11)
 
 ### O que são Scene, Camera e Renderer?
 
@@ -73,6 +66,14 @@ Cada um estuda primeiro as próprias perguntas. O professor pode perguntar qualq
 
 `position` move o objeto nos eixos X, Y e Z. `rotation` gira o objeto em radianos. `scale` altera suas proporções.
 
+### O que a função adicionar faz?
+
+Todo objeto passa pelos mesmos três passos: `new THREE.Mesh(geometria, material)`, `position.set(x, y, z)` e `scene.add(...)`. A função `adicionar` faz os três e devolve o Mesh, para que ainda dê para mudar `rotation` ou `scale` depois. O último parâmetro, `pai`, vale `scene` por padrão; nas partes da pessoa e das nuvens ele recebe o `Group`, então a peça entra no grupo em vez da cena.
+
+### Por que várias peças usam a mesma geometria?
+
+As 28 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
+
 ### Por que MeshStandardMaterial precisa de luz?
 
 Porque ele calcula como a luz bate na superfície. Sem uma luz na cena, esse material fica escuro.
@@ -81,13 +82,13 @@ Porque ele calcula como a luz bate na superfície. Sem uma luz na cena, esse mat
 
 `AmbientLight` clareia todos os objetos de maneira geral. `DirectionalLight` simula uma luz vinda de uma direção, como o sol.
 
-### Por que setAnimationLoop em vez de renderizar uma vez?
+### O que o repeat faz na textura?
 
-Porque animações e movimento precisam atualizar posições e redesenhar a cena continuamente. Uma renderização única mostraria apenas uma imagem parada.
+Ele repete a imagem em vez de esticá-la uma única vez. `repeat.set(12, 10)` desenha doze repetições no eixo horizontal e dez no vertical, cobrindo o terreno maior.
 
-### O que é FPS?
+### Por que configurar wrapS e wrapT?
 
-É a quantidade de quadros desenhados por segundo. Quanto maior o FPS, mais contínuo parece o movimento.
+Essas propriedades autorizam a repetição da textura nos dois eixos. `S` corresponde ao horizontal e `T` ao vertical.
 
 ### Qual é a diferença entre raster e vetor?
 
@@ -97,31 +98,11 @@ Raster é uma imagem formada por uma grade de pixels, como os PNGs das texturas.
 
 O navegador aplica regras de segurança a módulos e arquivos carregados. O servidor entrega o HTML, o módulo e as texturas por HTTP, evitando bloqueios de arquivos locais.
 
-### Como esconder o painel aumenta a área da cena?
-
-O botão acrescenta ou remove a classe CSS `painel-oculto` na aplicação. A classe esconde o painel e dá toda a largura ao canvas; `atualizarTamanho()` corrige o tamanho do renderer e a proporção da câmera.
-
-## Perguntas do Raphael — construção, texturas e logo
-
-### O que a função adicionar faz?
-
-Todo objeto passa pelos mesmos três passos: `new THREE.Mesh(geometria, material)`, `position.set(x, y, z)` e `scene.add(...)`. A função `adicionar` faz os três e devolve o Mesh, para que ainda dê para mudar `rotation` ou `scale` depois. O último parâmetro, `pai`, vale `scene` por padrão; nas partes da pessoa e das nuvens ele recebe o `Group`, então a peça entra no grupo em vez da cena.
-
-### Por que várias peças usam a mesma geometria?
-
-As 28 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
+## Perguntas do Raphael — objetos, logo e animações (12)
 
 ### Como foram feitas as linhas da quadra e do campo?
 
 Cada linha é uma `BoxGeometry` bem fina e branca. Os dois `for` percorrem as listas de posições e tamanhos: cinco caixas marcam a quadra (quatro bordas e a linha central) e cinco marcam o campo.
-
-### O que o repeat faz na textura?
-
-Ele repete a imagem em vez de esticá-la uma única vez. `repeat.set(12, 10)` desenha doze repetições no eixo horizontal e dez no vertical, cobrindo o terreno maior.
-
-### Por que configurar wrapS e wrapT?
-
-Essas propriedades autorizam a repetição da textura nos dois eixos. `S` corresponde ao horizontal e `T` ao vertical.
 
 ### Como a bandeira do Brasil foi feita?
 
@@ -155,8 +136,6 @@ Um `for` roda 28 vezes. A cada volta ele calcula um ângulo, cria um `Mesh` de `
 
 Para cada ângulo, o cosseno calcula a coordenada X e o seno calcula Y. Multiplicar pelo raio coloca cada caixa na borda da circunferência.
 
-## Perguntas do Herick — animações e interações
-
 ### O que é elapsedTime?
 
 É o tempo total, em segundos, desde o início do relógio. Como depende do tempo e não da quantidade de quadros, a animação mantém o ritmo em computadores diferentes.
@@ -168,6 +147,16 @@ Para cada ângulo, o cosseno calcula a coordenada X e o seno calcula Y. Multipli
 ### Por que usar Math.sin()?
 
 O seno varia suavemente entre -1 e 1. Isso produz um movimento de ida e volta sem criar várias condições.
+
+## Perguntas do Herick — interações, loop e câmera (11)
+
+### Por que setAnimationLoop em vez de renderizar uma vez?
+
+Porque animações e movimento precisam atualizar posições e redesenhar a cena continuamente. Uma renderização única mostraria apenas uma imagem parada.
+
+### O que é FPS?
+
+É a quantidade de quadros desenhados por segundo. Quanto maior o FPS, mais contínuo parece o movimento.
 
 ### Como funciona o pulo?
 
@@ -200,3 +189,7 @@ O código mede quanto o ponteiro se moveu. Se passou de cinco pixels, foi um arr
 ### O que emissive e emissiveIntensity fazem?
 
 `emissive` define a cor que parece sair do próprio material. `emissiveIntensity` controla a força desse brilho.
+
+### Como esconder o painel aumenta a área da cena?
+
+O botão acrescenta ou remove a classe CSS `painel-oculto` na aplicação. A classe esconde o painel e dá toda a largura ao canvas; `atualizarTamanho()` corrige o tamanho do renderer e a proporção da câmera.
