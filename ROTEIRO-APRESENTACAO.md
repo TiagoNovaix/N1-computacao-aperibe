@@ -1,62 +1,61 @@
 # Roteiro de apresentação — Clube dos 40
 
-Tempo previsto: 4 minutos, divididos igualmente: cerca de 1 minuto e 20 segundos para cada integrante. Cada um explica um terço do código e estuda um terço das perguntas (11, 12 e 11), com partes fáceis e difíceis para todos.
+Tempo previsto: 4 minutos, cerca de 1 minuto e 20 segundos para cada integrante. A divisão segue as seções numeradas do `index.html`: cada um é responsável por seções inteiras e seguidas, e as perguntas prováveis também foram divididas pelas seções de cada um.
 
-## 1. Tiago — tema, base do Three.js e texturas (0:00 a 1:20)
+| Integrante | Seções do `index.html` | Linhas | Tempo |
+|---|---|---|---|
+| Tiago | 1 a 4 | 252 a 445 | 0:00 a 1:20 |
+| Raphael | 4.1 a 7 | 447 a 642 | 1:20 a 2:40 |
+| Herick | 8 a 10 | 644 a 869 | 2:40 a 4:00 |
+
+O guia de estudo, com o código completo de cada seção, fica em `guia-de-estudo.pdf`, na pasta do projeto no vault.
+
+## 1. Tiago — seções 1 a 4 (0:00 a 1:20)
 
 1. Apresente o tema: “Evoluímos a Mini Aperibé para uma representação interativa do Clube dos 40, clube recreativo de Aperibé.”
 2. Mostre a vista de chegada: portal com o logo 40, duas piscinas, quadra, campo, banheiro, bancos e sede.
-3. Abra a seção 1 do código e explique:
-   - `Scene` guarda todos os elementos 3D;
-   - `PerspectiveCamera` define o ponto de vista com profundidade;
-   - `WebGLRenderer` desenha a cena no `canvas`.
-4. Abra a seção 2:
-   - todo `Mesh` combina uma geometria (a forma) e um material (a aparência);
-   - a função `adicionar` cria o `Mesh`, posiciona e adiciona à cena em uma linha;
-   - o `TextureLoader` carrega as imagens, e `wrapS`, `wrapT` e `repeat.set(12, 10)` repetem a grama pelo terreno.
+3. **Seção 1:** `Scene` guarda os objetos, `PerspectiveCamera` é o ponto de vista e `WebGLRenderer` desenha no `canvas`. A posição da câmera vem de dois ângulos e uma distância, convertidos com seno e cosseno.
+4. **Seção 2:** `TextureLoader` carrega as imagens; `wrapS`, `wrapT` e `repeat.set(12, 10)` repetem a grama. A função `adicionar` cria o `Mesh`, posiciona e adiciona à cena.
+5. **Seção 3:** o terreno é um plano deitado com `rotation.x`; sede e piscinas são caixas, cones e cilindros.
+6. **Seção 4:** as linhas da quadra e do campo são caixas finas criadas por um `for` sobre uma lista, e `criarGol` monta os dois gols.
 
-Frase de passagem: “Com a base pronta, o Raphael mostra os objetos e o que se mexe na cena.”
+Frase de passagem: “O Raphael continua a construção do clube.”
 
-## 2. Raphael — objetos, logo e animações (1:20 a 2:40)
+## 2. Raphael — seções 4.1 a 7 (1:20 a 2:40)
 
-1. Mostre sede, piscinas, quadra, campo, gols e árvores. As linhas brancas são caixas bem finas, criadas por um `for` sobre uma lista.
-2. Mostre o logo 40:
-   - o 4 tem três `BoxGeometry`: haste vertical, barra horizontal e diagonal;
-   - a diagonal liga dois pontos: `Math.hypot` dá o comprimento e `Math.atan2` dá a inclinação;
-   - o 0 repete uma caixa 28 vezes dentro de um `for`;
-   - a cada volta, `Math.cos()` calcula X e `Math.sin()` calcula Y.
-3. Abra o loop de animação:
-   - as seis nuvens são `Group`s de três esferas que andam em X, usando `delta`;
-   - a bandeira oscila com `Math.sin()` e `elapsedTime`;
-   - a água das piscinas sobe e desce levemente.
+1. **Seção 4.1:** banheiro com caixas e cone; `criarBanco` cria os dois bancos.
+2. **Seção 5:** a portaria e o logo 40.
+   - o 4 tem três caixas; a diagonal liga dois pontos, com `Math.hypot` para o comprimento e `Math.atan2` para a inclinação;
+   - o 0 são 28 caixas num `for`: `Math.cos()` calcula X e `Math.sin()` calcula Y;
+   - todas as peças usam o mesmo material e ficam na lista `pecasDoLogo`.
+3. **Seção 6:** as árvores vêm de uma lista de posições; a pessoa é um `Group` de 15 peças que se movem juntas; a bandeira usa `DoubleSide`.
+4. **Seção 7:** cada nuvem é um `Group` de três esferas; `AmbientLight` clareia tudo e `DirectionalLight` faz o papel do sol.
 
-Frase de passagem: “Além de animar a cena, usamos teclado e mouse para o usuário participar. Quem mostra é o Herick.”
+Frase de passagem: “Com o clube montado, o Herick mostra como o usuário interage e o que se mexe.”
 
-## 3. Herick — interações e fechamento (2:40 a 4:00)
+## 3. Herick — seções 8 a 10 (2:40 a 4:00)
 
-1. Demonstre W, A, S e D movendo a pessoa, Espaço fazendo-a pular e o arrasto girando a câmera.
-2. Explique o teclado:
-   - `keydown` marca a tecla como verdadeira e `keyup` volta para falsa;
-   - `THREE.MathUtils.clamp` impede a pessoa de sair do terreno;
-   - `Math.atan2` vira o rosto dela para onde anda.
-3. Clique no logo 40 para acender e apagar, e explique o caminho do clique:
-   - a coordenada do mouse vira um valor entre -1 e 1;
-   - `setFromCamera()` cria o raio a partir da câmera;
-   - `intersectObjects()` verifica se uma peça do logo foi atingida;
-   - `emissive` faz o material parecer aceso.
-4. Feche citando os números: 118 Meshes, 5 tipos de geometria, 4 texturas e 4 animações.
+1. Demonstre W, A, S e D, o Espaço para pular, o arrasto da câmera e o clique no logo.
+2. **Seção 8:** `keydown` marca a tecla como verdadeira e `keyup` volta para falsa. `moverPessoa` anda na direção das teclas, vira com `Math.atan2` e não sai do terreno por causa do `clamp`. O pulo usa meio ciclo de `Math.sin()`.
+3. **Seção 9:** arrastar muda os ângulos da câmera. No clique, o mouse vira um valor entre -1 e 1, `setFromCamera()` cria o raio, `intersectObjects()` testa as peças do logo e `emissive` acende.
+4. **Seção 10:** `setAnimationLoop` chama `animar` a cada quadro; `delta` move a pessoa e as nuvens, e `elapsedTime` com `Math.sin()` balança a bandeira e a água.
+5. Feche citando os números: 118 Meshes, 5 tipos de geometria, 4 texturas e 4 animações.
 
 ---
 
 ## Perguntas prováveis do professor, por integrante
 
-Cada um estuda primeiro as próprias perguntas. O professor pode perguntar qualquer coisa a qualquer um, então vale ler as dos outros depois.
+Cada um estuda primeiro as perguntas das próprias seções. O professor pode perguntar qualquer coisa a qualquer um, então vale ler as dos outros depois.
 
-## Perguntas do Tiago — base do Three.js, materiais e texturas (11)
+## Perguntas do Tiago — seções 1 a 4 (12)
 
 ### O que são Scene, Camera e Renderer?
 
 `Scene` é o contêiner dos objetos, luzes e grupos. `Camera` define de onde a cena é observada. `Renderer` transforma essas informações em pixels no canvas.
+
+### Por que a câmera está nessa posição?
+
+Dois ângulos e uma distância definem a posição da câmera. `lookAt(centroDaCamera)` a mantém apontada para o clube. O arrasto muda os ângulos; a roda muda a distância.
 
 ### O que é Geometry, Material e Mesh?
 
@@ -74,14 +73,6 @@ Todo objeto passa pelos mesmos três passos: `new THREE.Mesh(geometria, material
 
 As 28 peças do zero, as 8 árvores e os postes têm formas idênticas. Criar uma geometria só e passar para vários Meshes economiza memória: a forma fica guardada uma vez, e cada Mesh tem só a própria posição, rotação e escala.
 
-### Por que MeshStandardMaterial precisa de luz?
-
-Porque ele calcula como a luz bate na superfície. Sem uma luz na cena, esse material fica escuro.
-
-### Para que servem AmbientLight e DirectionalLight?
-
-`AmbientLight` clareia todos os objetos de maneira geral. `DirectionalLight` simula uma luz vinda de uma direção, como o sol.
-
 ### O que o repeat faz na textura?
 
 Ele repete a imagem em vez de esticá-la uma única vez. `repeat.set(12, 10)` desenha doze repetições no eixo horizontal e dez no vertical, cobrindo o terreno maior.
@@ -98,31 +89,15 @@ Raster é uma imagem formada por uma grade de pixels, como os PNGs das texturas.
 
 O navegador aplica regras de segurança a módulos e arquivos carregados. O servidor entrega o HTML, o módulo e as texturas por HTTP, evitando bloqueios de arquivos locais.
 
-## Perguntas do Raphael — objetos, logo e animações (12)
+### Como é feita a piscina redonda?
+
+Dois cilindros bem baixos, um branco e outro com a textura da água, formam borda e superfície. A superfície varia um pouco de altura no loop de animação.
 
 ### Como foram feitas as linhas da quadra e do campo?
 
 Cada linha é uma `BoxGeometry` bem fina e branca. Os dois `for` percorrem as listas de posições e tamanhos: cinco caixas marcam a quadra (quatro bordas e a linha central) e cinco marcam o campo.
 
-### Como a bandeira do Brasil foi feita?
-
-O script gera um PNG com fundo verde, losango amarelo e círculo azul. O `TextureLoader` carrega esse arquivo e o `map` aplica a imagem ao plano da bandeira.
-
-### Por que a bandeira usa DoubleSide?
-
-Um plano normalmente aparece apenas pelo lado da frente. `THREE.DoubleSide` permite enxergar a textura também quando a câmera olha o verso da bandeira.
-
-### Como é feita a piscina redonda?
-
-Dois cilindros bem baixos, um branco e outro com a textura da água, formam borda e superfície. A superfície varia um pouco de altura no loop de animação.
-
-### Por que a pessoa é um Group?
-
-Porque camiseta, bermuda, cabeça, cabelo, olhos, braços, mãos, pernas e tênis são meshes separados. Ao mover o grupo, todas as 15 partes se movem juntas.
-
-### Como as nuvens deixaram de ser ovais?
-
-Cada nuvem é um `Group` com três esferas de tamanhos e alturas diferentes. Mover o grupo faz os três volumes viajarem juntos. Há seis grupos espalhados sobre o terreno.
+## Perguntas do Raphael — seções 4.1 a 7 (11)
 
 ### Onde alterar manualmente o 4?
 
@@ -136,27 +111,39 @@ Um `for` roda 28 vezes. A cada volta ele calcula um ângulo, cria um `Mesh` de `
 
 Para cada ângulo, o cosseno calcula a coordenada X e o seno calcula Y. Multiplicar pelo raio coloca cada caixa na borda da circunferência.
 
-### O que é elapsedTime?
+### Por que a pessoa é um Group?
 
-É o tempo total, em segundos, desde o início do relógio. Como depende do tempo e não da quantidade de quadros, a animação mantém o ritmo em computadores diferentes.
+Porque camiseta, bermuda, cabeça, cabelo, olhos, braços, mãos, pernas e tênis são meshes separados. Ao mover o grupo, todas as 15 partes se movem juntas.
 
-### Qual é a diferença entre delta e elapsedTime?
+### Como a bandeira do Brasil foi feita?
 
-`delta` é o tempo entre o quadro atual e o anterior, usado para calcular deslocamento. `elapsedTime` é o tempo acumulado, útil para movimentos periódicos como `Math.sin()`.
+O script gera um PNG com fundo verde, losango amarelo e círculo azul. O `TextureLoader` carrega esse arquivo e o `map` aplica a imagem ao plano da bandeira.
+
+### Por que a bandeira usa DoubleSide?
+
+Um plano normalmente aparece apenas pelo lado da frente. `THREE.DoubleSide` permite enxergar a textura também quando a câmera olha o verso da bandeira.
+
+### Como as nuvens deixaram de ser ovais?
+
+Cada nuvem é um `Group` com três esferas de tamanhos e alturas diferentes. Mover o grupo faz os três volumes viajarem juntos. Há seis grupos espalhados sobre o terreno.
+
+### Para que servem AmbientLight e DirectionalLight?
+
+`AmbientLight` clareia todos os objetos de maneira geral. `DirectionalLight` simula uma luz vinda de uma direção, como o sol.
+
+### Por que MeshStandardMaterial precisa de luz?
+
+Porque ele calcula como a luz bate na superfície. Sem uma luz na cena, esse material fica escuro.
+
+### O que emissive e emissiveIntensity fazem?
+
+`emissive` define a cor que parece sair do próprio material. `emissiveIntensity` controla a força desse brilho.
 
 ### Por que usar Math.sin()?
 
 O seno varia suavemente entre -1 e 1. Isso produz um movimento de ida e volta sem criar várias condições.
 
-## Perguntas do Herick — interações, loop e câmera (11)
-
-### Por que setAnimationLoop em vez de renderizar uma vez?
-
-Porque animações e movimento precisam atualizar posições e redesenhar a cena continuamente. Uma renderização única mostraria apenas uma imagem parada.
-
-### O que é FPS?
-
-É a quantidade de quadros desenhados por segundo. Quanto maior o FPS, mais contínuo parece o movimento.
+## Perguntas do Herick — seções 8 a 10 (11)
 
 ### Como funciona o pulo?
 
@@ -170,10 +157,6 @@ As teclas viram duas direções, `direcaoX` e `direcaoZ`, que valem -1, 0 ou 1. 
 
 O `keyup` nunca chegaria e a pessoa andaria sozinha. O evento `blur` da janela solta todas as teclas. E o `delta` é limitado a 0,05 segundo com `Math.min`: ao voltar de outra aba, ele viria com vários segundos de uma vez e a pessoa daria um salto.
 
-### Por que a câmera está nessa posição?
-
-Dois ângulos e uma distância definem a posição da câmera. `lookAt(centroDaCamera)` a mantém apontada para o clube. O arrasto muda os ângulos; a roda muda a distância.
-
 ### O que o Raycaster faz?
 
 Ele lança um raio imaginário da câmera na direção do mouse e informa quais objetos 3D foram atingidos.
@@ -186,9 +169,21 @@ Esse é o sistema de coordenadas normalizadas que o Three.js espera em `setFromC
 
 O código mede quanto o ponteiro se moveu. Se passou de cinco pixels, foi um arrasto e o clique seguinte não usa o `Raycaster`.
 
-### O que emissive e emissiveIntensity fazem?
+### Por que setAnimationLoop em vez de renderizar uma vez?
 
-`emissive` define a cor que parece sair do próprio material. `emissiveIntensity` controla a força desse brilho.
+Porque animações e movimento precisam atualizar posições e redesenhar a cena continuamente. Uma renderização única mostraria apenas uma imagem parada.
+
+### O que é FPS?
+
+É a quantidade de quadros desenhados por segundo. Quanto maior o FPS, mais contínuo parece o movimento.
+
+### O que é elapsedTime?
+
+É o tempo total, em segundos, desde o início do relógio. Como depende do tempo e não da quantidade de quadros, a animação mantém o ritmo em computadores diferentes.
+
+### Qual é a diferença entre delta e elapsedTime?
+
+`delta` é o tempo entre o quadro atual e o anterior, usado para calcular deslocamento. `elapsedTime` é o tempo acumulado, útil para movimentos periódicos como `Math.sin()`.
 
 ### Como esconder o painel aumenta a área da cena?
 
